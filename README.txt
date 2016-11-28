@@ -118,7 +118,8 @@ About the Implementation:
 (Required) Installation (Local, Windows):
 -----------------------------------------
   - Acquire Matlab (used for combining renders for reconstruction).
-  - Acquire Python 3 (used for generating batch job configurations).
+  - Acquire Python 3.1 or later (used for generating batch job
+  configurations).
   - Acquire ffmpeg.exe (used for generating animations). The recommended
   way is by installing WinFF. The expected path for ffmpeg.exe is
   ‘c:\program files\winff\ffmpeg.exe’. If you change this you need to
@@ -224,7 +225,7 @@ Usage:
   Warning: Do not change the value of frame_time as some parts of the
   code were not updated to support other values.
   
-  Run your batch configuration script with Python 3.
+  Run your batch configuration script with Python 3.1 or later.
       Example: python generate_crytek_sponza.py my_batch
   
   This will create configuration files into ‘cluster/configs/’ with
@@ -487,6 +488,8 @@ Notes:
   
 Change log:
 -----------
+  2017/11/27: Add note that Python 3.1 or later is required.
+              Change default temporary directory from D drive to C.
   2017/11/24: Initial release.
   
   
