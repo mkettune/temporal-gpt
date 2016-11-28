@@ -27,7 +27,7 @@ OUT_DIR = sprintf('%s/%s', out_dir, task_path);
 VIDEO_OUT_DIR = sprintf('%s/_aaa_videos', out_dir);
 
 
-TEMP_DIRECTORY = 'D:\tmp-delete-me'; % NOTE: Change!
+TEMP_DIRECTORY = 'C:\tmp-delete-me';
 
 RECONSTRUCT_L1 = '..\bin\tpoisson.exe';
 RECONSTRUCT_L2 = '..\bin\tpoisson.exe';
