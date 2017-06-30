@@ -488,9 +488,10 @@ Notes:
   
 Change log:
 -----------
-  2017/11/27: Add note that Python 3.1 or later is required.
+  2017/06/30: Fixed G-PT's serialization. Enables network rendering.
+  2016/11/27: Add note that Python 3.1 or later is required.
               Change default temporary directory from D drive to C.
-  2017/11/24: Initial release.
+  2016/11/24: Initial release.
   
   
 License Information:
