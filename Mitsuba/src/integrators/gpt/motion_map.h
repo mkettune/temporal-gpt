@@ -54,6 +54,8 @@ public:
 	Point2i getOffset(int x, int y);
 	Point2i getBackwardOffset(int x, int y);
 
+	MTS_DECLARE_CLASS()
+
 private:
 	void computeBackwardsMap();
 

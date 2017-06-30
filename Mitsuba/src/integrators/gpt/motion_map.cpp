@@ -14,11 +14,13 @@ MotionMap::MotionMap(int width, int height)
 
 MotionMap::MotionMap(Stream *stream, InstanceManager *manager)
 {
-	int npix = 3 * m_width * m_height;
 	m_width = stream->readInt();
 	m_height = stream->readInt();
-	for (int i = 0; i < npix; i++)
-		m_motionForward[i] = stream->readFloat();
+
+	int npix = 3 * m_width * m_height;
+	m_motionForward.resize(npix);
+	m_motionBackward.resize(npix, std::numeric_limits<Float>::infinity());
+	stream->readArray(m_motionForward.data(), npix);
 }
 
 
@@ -28,8 +30,7 @@ void MotionMap::serialize(Stream *stream, InstanceManager *manager) const
 	int npix = 3 * m_width*m_height;
 	stream->writeInt(m_width);
 	stream->writeInt(m_height);
-	for (int i = 0; i < npix; i++)
-		stream->writeFloat(m_motionForward[i]);
+	stream->writeArray(m_motionForward.data(), npix);
 }
 
 /// set complete frame
@@ -213,5 +214,5 @@ Point2i MotionMap::getBackwardOffset(int x, int y){
 	return Point2i(int(m_motionBackward[3 * idx]), int(m_motionBackward[3 * idx + 1]));
 }
 
-
+MTS_IMPLEMENT_CLASS_S(MotionMap, false, SerializableObject)
 MTS_NAMESPACE_END

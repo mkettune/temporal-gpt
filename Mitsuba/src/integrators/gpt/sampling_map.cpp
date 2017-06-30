@@ -384,19 +384,25 @@ void SamplingMap::getImage(Bitmap *bitmap)
 
 SamplingMap::SamplingMap(Stream *stream, InstanceManager *manager)
 {
+	m_only_gradients = stream->readBool();
 	m_rgn = static_cast<Random *>(manager->getInstance(stream));
 	m_size = Vector2i(stream);
 	m_maxspp = stream->readInt();
 	m_requested_spp = stream->readInt();
 	//m_real_spp = stream->readInt();
 	int npix = m_size.x * m_size.y;
-	for (int i = 0; i < npix; i++){
-		m_map[i] = stream->readInt();
-		m_accum_map[i] = stream->readInt();
-		m_tmp[i] = stream->readFloat();
-		m_tmp2[i] = stream->readFloat();
-		m_spp[i] = stream->readFloat();
-	}
+
+	m_tmp.resize(npix, Float(0.0));
+	m_tmp2.resize(npix, Float(0.0));
+	m_spp.resize(npix, Float(0.0));
+	m_map.resize(npix, 0); // initial_spp
+	m_accum_map.resize(npix, 0); // initial_spp
+
+	stream->readArray(m_map.data(), npix);
+	stream->readArray(m_accum_map.data(), npix);
+	stream->readArray(m_tmp.data(), npix);
+	stream->readArray(m_tmp2.data(), npix);
+	stream->readArray(m_spp.data(), npix);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -404,18 +410,20 @@ SamplingMap::SamplingMap(Stream *stream, InstanceManager *manager)
 
 void SamplingMap::serialize(Stream *stream, InstanceManager *manager) const
 {
+	stream->writeBool(m_only_gradients);
 	manager->serialize(stream, m_rgn.get());
 	m_size.serialize(stream);
 	stream->writeInt(m_maxspp);
 	stream->writeInt(m_requested_spp);
 //	stream->writeInt(m_real_spp);
 	int npix = m_size.x * m_size.y;
-	for (int i = 0; i < npix; i++){
-		stream->writeInt(m_map[i]);
-		stream->writeInt(m_accum_map[i]);
-		stream->writeFloat(m_tmp[i]);
-		stream->writeFloat(m_tmp2[i]);
-		stream->writeFloat(m_spp[i]);
-	}
+
+	stream->writeArray(m_map.data(), npix);
+	stream->writeArray(m_accum_map.data(), npix);
+	stream->writeArray(m_tmp.data(), npix);
+	stream->writeArray(m_tmp2.data(), npix);
+	stream->writeArray(m_spp.data(), npix);
 }
+
+MTS_IMPLEMENT_CLASS_S(SamplingMap, false, SerializableObject)
 MTS_NAMESPACE_END

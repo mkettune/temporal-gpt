@@ -59,6 +59,58 @@ struct GradientPathTracerConfig {
 	int  m_sampling_iter;		// number of sampling iterations in case useAdaptive=true.
 
 	bool m_disableGradients;	// whether to disable estimating the spatial gradients. Used e.g. for rendering standard PT images with GPT's adaptive sampling code.
+
+	inline GradientPathTracerConfig() { }
+
+	inline GradientPathTracerConfig(Stream *stream) {
+		m_maxDepth = stream->readInt();
+		m_minDepth = stream->readInt();
+		m_rrDepth = stream->readInt();
+		m_strictNormals = stream->readBool();
+
+		m_shiftThreshold = stream->readFloat();
+		m_reconstructL1 = stream->readBool();
+		m_reconstructL2 = stream->readBool();
+		m_reconstructAlpha = stream->readFloat();
+
+		m_seed = stream->readInt();
+		m_seedShift = Point2i(stream);
+
+		m_useMotionVectors = stream->readBool();
+
+		m_isBase = stream->readBool();
+		m_isTimeOffset = stream->readBool();
+
+		m_useAdaptive = stream->readBool();
+		m_sampling_iter = stream->readInt();
+
+		m_disableGradients = stream->readBool();
+	}
+
+	inline void serialize(Stream *stream) const {
+		stream->writeInt(m_maxDepth);
+		stream->writeInt(m_minDepth);
+		stream->writeInt(m_rrDepth);
+		stream->writeBool(m_strictNormals);
+
+		stream->writeFloat(m_shiftThreshold);
+		stream->writeBool(m_reconstructL1);
+		stream->writeBool(m_reconstructL2);
+		stream->writeFloat(m_reconstructAlpha);
+
+		stream->writeInt(m_seed);
+		m_seedShift.serialize(stream);
+
+		stream->writeBool(m_useMotionVectors);
+
+		stream->writeBool(m_isBase);
+		stream->writeBool(m_isTimeOffset);
+
+		stream->writeBool(m_useAdaptive);
+		stream->writeInt(m_sampling_iter);
+
+		stream->writeBool(m_disableGradients);
+	}
 };
 
 

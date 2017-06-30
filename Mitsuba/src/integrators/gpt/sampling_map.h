@@ -40,6 +40,8 @@ public:
 
 	void getImage(Bitmap *bitmap);
 
+	MTS_DECLARE_CLASS()
+
 private:
 	/// 
 	Float splatInSPP(const Float &energy, Float *weights, int len);

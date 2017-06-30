@@ -1396,6 +1396,12 @@ private:
 GradientPathIntegrator::GradientPathIntegrator(const Properties &props)
 	: MonteCarloIntegrator(props)
 {
+	/* Get config from the parent class. */
+	m_config.m_maxDepth = m_maxDepth;
+	m_config.m_minDepth = 1; // m_minDepth;
+	m_config.m_rrDepth = m_rrDepth;
+	m_config.m_strictNormals = m_strictNormals;
+
 	m_config.m_disableGradients = props.getBoolean("disableGradients", false);
 	m_config.m_useMotionVectors = props.getBoolean("useMotionVectors", false);
 	
@@ -1445,21 +1451,7 @@ GradientPathIntegrator::GradientPathIntegrator(const Properties &props)
 GradientPathIntegrator::GradientPathIntegrator(Stream *stream, InstanceManager *manager)
 	: MonteCarloIntegrator(stream, manager)
 {
-	m_config.m_disableGradients = stream->readBool();
-	m_config.m_useMotionVectors = stream->readBool();
-
-	m_config.m_seed = stream->readInt();
-	m_config.m_seedShift = Point2i(stream);
-	m_config.m_shiftThreshold = stream->readFloat();
-	m_config.m_reconstructL1 = stream->readBool();
-	m_config.m_reconstructL2 = stream->readBool();
-	m_config.m_reconstructAlpha = stream->readFloat();
-
-	m_config.m_isBase = stream->readBool();
-	m_config.m_isTimeOffset = stream->readBool();
-
-	m_config.m_useAdaptive = stream->readBool();
-	m_config.m_sampling_iter = stream->readInt();
+	m_config = GradientPathTracerConfig(stream);
 }
 
 
@@ -1716,12 +1708,6 @@ bool GradientPathIntegrator::render(Scene *scene,
 			Log(EInfo, "Running GPT with reconstruction disabled!");
 		}
 	}
-
-	/* Get config from the parent class. */
-	m_config.m_maxDepth = m_maxDepth;
-	m_config.m_minDepth = 1; // m_minDepth;
-	m_config.m_rrDepth = m_rrDepth;
-	m_config.m_strictNormals = m_strictNormals;
 
 	/* Code duplicated from SamplingIntegrator::Render. */
 	ref<Scheduler> sched = Scheduler::getInstance();
@@ -2181,22 +2167,7 @@ Spectrum GradientPathIntegrator::Li(const RayDifferential &r, RadianceQueryRecor
 
 void GradientPathIntegrator::serialize(Stream *stream, InstanceManager *manager) const {
 	MonteCarloIntegrator::serialize(stream, manager);
-	stream->writeBool(m_config.m_disableGradients);
-	stream->writeBool(m_config.m_useMotionVectors);
-
-	stream->writeInt(m_config.m_seed);
-	m_config.m_seedShift.serialize(stream);
-
-	stream->writeFloat(m_config.m_shiftThreshold);
-	stream->writeBool(m_config.m_reconstructL1);
-	stream->writeBool(m_config.m_reconstructL2);
-	stream->writeFloat(m_config.m_reconstructAlpha);
-
-	stream->writeBool(m_config.m_isBase);
-	stream->writeBool(m_config.m_isTimeOffset);
-
-	stream->writeBool(m_config.m_useAdaptive);
-	stream->writeInt(m_config.m_sampling_iter);
+	m_config.serialize(stream);
 }
 
 std::string GradientPathIntegrator::toString() const {
