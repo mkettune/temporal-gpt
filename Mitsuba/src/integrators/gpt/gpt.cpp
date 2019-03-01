@@ -420,15 +420,18 @@ ReconnectionShiftResult reconnectShift(const Scene* scene, Point3 mainSourceVert
 	return result;
 }
 
-/// Tries to connect the offset path to a the environment emitter.
+/// Tries to connect the offset path to an environment emitter.
 ReconnectionShiftResult environmentShift(const Scene* scene, const Ray& mainRay, Point3 shiftSourceVertex) {
 	const Emitter* env = scene->getEnvironmentEmitter();
 
 	ReconnectionShiftResult result;
 
 	// Check visibility of the environment.
-	if(!testEnvironmentVisibility(scene, mainRay)) {
-		// Sampled by BSDF so cannot accept occlusion.
+	Ray offsetRay = mainRay;
+	offsetRay.setOrigin(shiftSourceVertex);
+
+	if(!testEnvironmentVisibility(scene, offsetRay)) {
+		// Environment was occluded.
 		result.success = false;
 		return result;
 	}

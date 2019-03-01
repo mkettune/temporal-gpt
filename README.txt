@@ -488,6 +488,7 @@ Notes:
   
 Change log:
 -----------
+  2019/03/01: Fix a bug in the environment map shift.
   2017/11/27: Add note that Python 3.1 or later is required.
               Change default temporary directory from D drive to C.
   2017/11/24: Initial release.
